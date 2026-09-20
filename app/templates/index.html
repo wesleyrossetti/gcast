@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – Chromecast Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <h2 class="mb-0"><i class="bi bi-grid me-2 text-danger"></i>Dashboard</h2>
+  <div class="d-flex gap-2 align-items-center">
+    <span id="status-indicator" class="badge bg-secondary"><i class="bi bi-circle-fill me-1"></i>Aguardando</span>
+    <button class="btn btn-outline-light btn-sm" id="btn-discover">
+      <i class="bi bi-search me-1"></i>Descobrir Devices
+    </button>
+  </div>
+</div>
+
+<!-- Known hosts form (hidden by default) -->
+<div class="collapse mb-3" id="discover-options">
+  <div class="card bg-secondary bg-opacity-25 border-secondary p-3">
+    <label class="form-label small text-muted">IPs ou sub-redes (opcional) — ex: 192.168.1.100, 10.0.0.0/24</label>
+    <div class="input-group">
+      <input type="text" class="form-control bg-dark text-light border-secondary" id="known-hosts"
+             placeholder="192.168.1.100, 10.25.25.0/24">
+      <button class="btn btn-danger" id="btn-start-discover">
+        <i class="bi bi-search me-1"></i>Descobrir
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Device cards grid -->
+<div id="devices-grid" class="row g-3">
+  <div class="col-12 text-center text-muted py-5" id="empty-state">
+    <i class="bi bi-cast display-4 d-block mb-3 opacity-25"></i>
+    <p>Nenhum device encontrado. Clique em <strong>Descobrir Devices</strong> para buscar Chromecasts na rede.</p>
+  </div>
+</div>
+
+<!-- Play Media Modal -->
+<div class="modal fade" id="playModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title"><i class="bi bi-play-circle me-2 text-danger"></i>Reproduzir</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="play-device-id">
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs nav-fill mb-3" id="playTabs">
+          <li class="nav-item">
+            <button class="nav-link active text-light" data-bs-toggle="tab" data-bs-target="#tab-youtube">
+              <i class="bi bi-youtube text-danger me-1"></i>YouTube
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link text-light" data-bs-toggle="tab" data-bs-target="#tab-url">
+              <i class="bi bi-link-45deg me-1"></i>URL Direta
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link text-light" data-bs-toggle="tab" data-bs-target="#tab-web">
+              <i class="bi bi-globe me-1"></i>Página Web
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- YouTube tab -->
+          <div class="tab-pane fade show active" id="tab-youtube">
+            <div class="mb-3">
+              <label class="form-label">URL ou ID do vídeo do YouTube</label>
+              <input type="text" class="form-control bg-secondary text-light border-secondary"
+                     id="play-yt-url"
+                     placeholder="https://youtube.com/watch?v=... ou G_8uG1Ot0yo">
+              <div class="form-text text-muted">Formatos aceitos: youtube.com/watch?v=ID, youtu.be/ID, ID direto</div>
+            </div>
+            <div id="yt-preview" class="d-none mb-2">
+              <div class="ratio ratio-16x9 rounded overflow-hidden">
+                <iframe id="yt-iframe" src="" allowfullscreen class="rounded"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct URL tab -->
+          <div class="tab-pane fade" id="tab-url">
+            <div class="mb-3">
+              <label class="form-label">URL da Mídia *</label>
+              <input type="url" class="form-control bg-secondary text-light border-secondary" id="play-url"
+                     placeholder="https://exemplo.com/video.mp4">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tipo de Conteúdo</label>
+              <select class="form-select bg-secondary text-light border-secondary" id="play-content-type">
+                <option value="video/mp4">Vídeo MP4</option>
+                <option value="video/webm">Vídeo WebM</option>
+                <option value="audio/mp3">Áudio MP3</option>
+                <option value="audio/aac">Áudio AAC</option>
+                <option value="application/x-mpegURL">HLS (m3u8)</option>
+                <option value="video/mp2t">MPEG-TS</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Título (opcional)</label>
+              <input type="text" class="form-control bg-secondary text-light border-secondary" id="play-title"
+                     placeholder="Nome do conteúdo">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">URL da Miniatura (opcional)</label>
+              <input type="url" class="form-control bg-secondary text-light border-secondary" id="play-thumb"
+                     placeholder="https://exemplo.com/thumb.jpg">
+            </div>
+          </div>
+
+          <!-- Web Page tab -->
+          <div class="tab-pane fade" id="tab-web">
+            <div class="mb-3">
+              <label class="form-label">URL da página *</label>
+              <input type="url" class="form-control border-secondary" id="cast-web-url"
+                     placeholder="https://exemplo.com">
+              <div class="form-text text-muted">Exibe a página no Chromecast via DashCast (app ID 84912283).</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Recarregar a cada (segundos)</label>
+              <input type="number" class="form-control border-secondary" id="cast-web-reload"
+                     min="0" value="0" placeholder="0 = sem recarga automática">
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="cast-web-force">
+              <label class="form-check-label" for="cast-web-force">
+                Forçar carregamento (bypass X-Frame-Options)
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-play">
+          <i class="bi bi-play-fill me-1"></i>Reproduzir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/dashboard.js?v={{ static_v }}"></script>
+{% endblock %}

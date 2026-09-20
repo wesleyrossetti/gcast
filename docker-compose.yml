@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  chromecast-manager:
+    build: .
+    container_name: chromecast-manager
+    restart: unless-stopped
+    # Host network required for mDNS/Zeroconf Chromecast discovery
+    network_mode: host
+    environment:
+      - API_PORT=8001
+      - LOG_LEVEL=INFO
+      - DISCOVERY_TIMEOUT=15
+      - HISTORY_MAX_SIZE=1000
+      - HISTORY_FILE=/app/data/history.json
+      - SCHEDULE_FILE=/app/data/schedules.json
+    volumes:
+      - chromecast-data:/app/data
+
+volumes:
+  chromecast-data:

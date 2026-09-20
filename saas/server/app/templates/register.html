@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cadastro – Chromecast Manager</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-dark text-light d-flex align-items-center justify-content-center" style="min-height:100vh;">
+<div class="card bg-secondary bg-opacity-10 border-secondary p-4" style="width:100%;max-width:440px;">
+  <div class="text-center mb-4">
+    <i class="bi bi-cast text-danger" style="font-size:2.5rem;"></i>
+    <h4 class="mt-2 mb-0">Criar Conta</h4>
+  </div>
+  <div id="alert-box" class="d-none alert alert-danger py-2"></div>
+  <form id="reg-form">
+    <div class="mb-3">
+      <label class="form-label">Nome</label>
+      <input type="text" class="form-control bg-dark text-light border-secondary" id="name" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">E-mail</label>
+      <input type="email" class="form-control bg-dark text-light border-secondary" id="email" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Senha <small class="text-muted">(mín. 8 caracteres)</small></label>
+      <input type="password" class="form-control bg-dark text-light border-secondary" id="password" required minlength="8">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Nome da Organização / Empresa</label>
+      <input type="text" class="form-control bg-dark text-light border-secondary" id="org_name" required>
+    </div>
+    <button type="submit" class="btn btn-danger w-100">
+      <i class="bi bi-person-plus me-1"></i>Criar Conta
+    </button>
+  </form>
+  <hr class="border-secondary">
+  <p class="text-center text-muted small mb-0">
+    Já tem conta? <a href="/login" class="text-danger">Entrar</a>
+  </p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/api.js"></script>
+<script>
+document.getElementById('reg-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const box = document.getElementById('alert-box');
+  box.classList.add('d-none');
+  try {
+    await apiPost('/auth/register', {
+      name:     document.getElementById('name').value,
+      email:    document.getElementById('email').value,
+      password: document.getElementById('password').value,
+      org_name: document.getElementById('org_name').value,
+    });
+    window.location.href = '/';
+  } catch (err) {
+    box.textContent = err.message;
+    box.classList.remove('d-none');
+  }
+});
+</script>
+</body>
+</html>

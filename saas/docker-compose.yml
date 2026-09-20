@@ -1,0 +1,32 @@
+services:
+  server:
+    build: ./server
+    container_name: chromecast-saas-server
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      - API_PORT=8002
+      - SECRET_KEY=CHANGE-ME-use-openssl-rand-hex-32
+      - DATABASE_URL=sqlite+aiosqlite:///./data/saas.db
+      - LOG_LEVEL=INFO
+    volumes:
+      - saas-data:/app/data
+
+  agent:
+    build: ./agent
+    container_name: chromecast-saas-agent
+    restart: unless-stopped
+    # Host network required for mDNS Chromecast discovery
+    network_mode: host
+    environment:
+      - AGENT_TOKEN=REPLACE-WITH-TOKEN-FROM-DASHBOARD
+      - SERVER_WS_URL=ws://localhost:8002/ws/agent
+      - DISCOVERY_TIMEOUT=15
+      - STATUS_INTERVAL=5
+      - LOG_LEVEL=INFO
+    depends_on:
+      - server
+
+volumes:
+  saas-data:

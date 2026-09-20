@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% set active = "history" %}
+{% block title %}Histórico{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0"><i class="bi bi-clock-history me-2 text-danger"></i>Histórico</h2>
+  <a href="/api/history?limit=200" target="_blank" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-download me-1"></i>Exportar JSON
+  </a>
+</div>
+<div class="table-responsive">
+  <table class="table table-dark table-hover table-sm align-middle">
+    <thead>
+      <tr><th>Horário</th><th>Device</th><th>Ação</th><th>Detalhes</th><th>Status</th></tr>
+    </thead>
+    <tbody id="history-body">
+      <tr><td colspan="5" class="text-center text-muted py-4">Carregando...</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+{% block extra_js %}<script src="/static/js/history.js"></script>{% endblock %}

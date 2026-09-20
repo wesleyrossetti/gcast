@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% set active = "agents" %}
+{% block title %}Agentes{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0"><i class="bi bi-cpu me-2 text-danger"></i>Agentes Locais</h2>
+  <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#newAgentModal">
+    <i class="bi bi-plus-lg me-1"></i>Novo Agente
+  </button>
+</div>
+
+<div id="agents-list" class="row g-3">
+  <div class="col-12 text-center text-muted py-5">
+    <i class="bi bi-cpu display-4 d-block mb-3 opacity-25"></i>
+    <p>Nenhum agente criado.</p>
+  </div>
+</div>
+
+<!-- New agent modal -->
+<div class="modal fade" id="newAgentModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title"><i class="bi bi-plus-circle me-2 text-danger"></i>Novo Agente</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Nome do agente (ex: Escritório SP)</label>
+        <input type="text" class="form-control bg-secondary text-light border-secondary" id="agent-name" placeholder="Meu Local">
+      </div>
+      <div class="modal-footer border-secondary">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-danger" id="btn-create-agent"><i class="bi bi-plus-lg me-1"></i>Criar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Token display modal (one-time) -->
+<div class="modal fade" id="tokenModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title"><i class="bi bi-key text-warning me-2"></i>Token do Agente</h5>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning py-2 small">
+          <i class="bi bi-exclamation-triangle me-1"></i>
+          Copie agora — este token <strong>não será exibido novamente</strong>.
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control bg-secondary text-light border-secondary font-monospace" id="token-value" readonly>
+          <button class="btn btn-outline-light" id="btn-copy-token" title="Copiar">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+        <p class="small text-muted mb-1">Execute na rede local onde estão os Chromecasts:</p>
+        <pre class="bg-black rounded p-2 small text-success" id="docker-cmd"></pre>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button class="btn btn-danger" data-bs-dismiss="modal" onclick="loadAgents()">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}<script src="/static/js/agents.js"></script>{% endblock %}

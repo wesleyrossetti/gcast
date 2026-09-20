@@ -8,6 +8,7 @@ spec:
   type: ClusterIP
   selector:
     {{- include "gcast-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.port }}

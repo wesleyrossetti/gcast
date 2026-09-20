@@ -4,15 +4,18 @@ metadata:
   name: {{ include "gcast-server.fullname" . }}
   labels:
     {{- include "gcast-server.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "gcast-server.labels" . | nindent 6 }}
+      app.kubernetes.io/component: server
   template:
     metadata:
       labels:
         {{- include "gcast-server.labels" . | nindent 8 }}
+        app.kubernetes.io/component: server
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

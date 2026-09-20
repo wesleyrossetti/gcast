@@ -38,5 +38,20 @@ postgres:
   password: ""
   storageClassName: oci-bv
   storageSize: 2Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
-resources: {}
+# Uso observado em produção (kubectl top): ~2m CPU / 67Mi em idle — valores
+# abaixo dão folga confortável pra picos de requisição/WS sem superdimensionar.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi

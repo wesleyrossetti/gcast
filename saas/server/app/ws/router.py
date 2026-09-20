@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy import select
@@ -47,7 +47,7 @@ async def agent_ws(ws: WebSocket, db: AsyncSession = Depends(get_db)):
 
         agent_id = agent.id
         org_id   = agent.org_id
-        agent.last_seen = datetime.utcnow()
+        agent.last_seen = datetime.now(timezone.utc)
         await db.commit()
 
         manager.connect(agent_id, org_id, ws)
@@ -74,7 +74,7 @@ async def agent_ws(ws: WebSocket, db: AsyncSession = Depends(get_db)):
                 await ws.send_json({"type": "pong"})
 
             # Update last_seen periodically (every ~10 messages to reduce DB writes)
-            agent.last_seen = datetime.utcnow()
+            agent.last_seen = datetime.now(timezone.utc)
 
     except WebSocketDisconnect:
         pass
@@ -108,7 +108,7 @@ async def _upsert_devices(
             device.friendly_name = d.get("friendly_name") or device.friendly_name
             device.host          = d.get("host") or device.host
             device.agent_id      = agent_id  # o agente que reportou por último passa a ser o dono
-            device.updated_at    = datetime.utcnow()
+            device.updated_at    = datetime.now(timezone.utc)
         else:
             device = Device(
                 device_uuid   = uuid,

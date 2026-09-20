@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
@@ -15,7 +15,9 @@ def _uuid() -> str:
 
 
 def _now() -> datetime:
-    return datetime.utcnow()
+    # datetime "aware" (com tzinfo=UTC) — sem isso, o front-end interpreta o
+    # horário como se já fosse local e some com a conversão de fuso.
+    return datetime.now(timezone.utc)
 
 
 # ── Organization ──────────────────────────────────────────────────────────────
@@ -26,7 +28,7 @@ class Organization(Base):
     id         = Column(String, primary_key=True, default=_uuid)
     name       = Column(String, nullable=False)
     slug       = Column(String, unique=True, nullable=False)
-    created_at = Column(DateTime, default=_now)
+    created_at = Column(DateTime(timezone=True), default=_now)
 
     users   = relationship("User",   back_populates="org",   lazy="select")
     agents  = relationship("Agent",  back_populates="org",   lazy="select")
@@ -44,7 +46,7 @@ class User(Base):
     name          = Column(String)
     org_id        = Column(String, ForeignKey("organizations.id"), nullable=False)
     role          = Column(String, default="owner")   # owner | admin | member
-    created_at    = Column(DateTime, default=_now)
+    created_at    = Column(DateTime(timezone=True), default=_now)
 
     org = relationship("Organization", back_populates="users")
 
@@ -58,8 +60,8 @@ class Agent(Base):
     name       = Column(String, nullable=False)
     token_hash = Column(String, unique=True, nullable=False)
     org_id     = Column(String, ForeignKey("organizations.id"), nullable=False)
-    last_seen  = Column(DateTime)
-    created_at = Column(DateTime, default=_now)
+    last_seen  = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), default=_now)
 
     org     = relationship("Organization", back_populates="agents")
     # delete-orphan: ao apagar um agente, os devices associados vão junto (sem
@@ -87,7 +89,7 @@ class Device(Base):
     agent_id     = Column(String, ForeignKey("agents.id"), nullable=False)
     org_id       = Column(String, ForeignKey("organizations.id"), nullable=False)
     status_json  = Column(Text)                     # latest status snapshot
-    updated_at   = Column(DateTime, default=_now)
+    updated_at   = Column(DateTime(timezone=True), default=_now)
 
     org   = relationship("Organization", back_populates="devices")
     agent = relationship("Agent", back_populates="devices")
@@ -106,7 +108,7 @@ class HistoryEntry(Base):
     details_json = Column(Text, default="{}")
     success     = Column(Boolean, default=True)
     error       = Column(String)
-    timestamp   = Column(DateTime, default=_now)
+    timestamp   = Column(DateTime(timezone=True), default=_now)
 
 
 # ── Schedule ──────────────────────────────────────────────────────────────────
@@ -118,9 +120,9 @@ class Schedule(Base):
     org_id       = Column(String, ForeignKey("organizations.id"), nullable=False)
     device_uuid  = Column(String, nullable=False)
     action       = Column(String, nullable=False)
-    run_at       = Column(DateTime, nullable=False)
+    run_at       = Column(DateTime(timezone=True), nullable=False)
     recurrence   = Column(String, default="once")   # once | daily | weekly
     details_json = Column(Text, default="{}")
     enabled      = Column(Boolean, default=True)
-    created_at   = Column(DateTime, default=_now)
-    last_run     = Column(DateTime)
+    created_at   = Column(DateTime(timezone=True), default=_now)
+    last_run     = Column(DateTime(timezone=True))

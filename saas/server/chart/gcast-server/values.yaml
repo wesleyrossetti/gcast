@@ -1,0 +1,42 @@
+image:
+  repository: ghcr.io/wesleyrossetti/gcast-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Nome de um secret docker-registry já existente no namespace, criado manualmente:
+#   kubectl -n gcast create secret docker-registry ghcr-pull-secret \
+#     --docker-server=ghcr.io --docker-username=<user> --docker-password=<PAT read:packages>
+imagePullSecrets:
+  - name: ghcr-pull-secret
+
+replicaCount: 1
+
+service:
+  port: 8002
+
+ingress:
+  enabled: true
+  className: traefik
+  host: gcast.wmanti.com.br
+  tls:
+    enabled: false
+    secretName: ""
+    # Se o cluster tiver cert-manager, descomente e ajuste no template ingress.yaml:
+    # clusterIssuer: letsencrypt-prod
+
+# SECRET_KEY usada para assinar os JWT — NUNCA deixar o valor real aqui.
+# Sobrescrever no install: --set secretKey=$(openssl rand -hex 32)
+secretKey: ""
+
+logLevel: INFO
+
+postgres:
+  image: postgres:16-alpine
+  database: gcast
+  user: gcast
+  # NUNCA deixar o valor real aqui — sobrescrever no install: --set postgres.password=...
+  password: ""
+  storageClassName: oci-bv
+  storageSize: 2Gi
+
+resources: {}

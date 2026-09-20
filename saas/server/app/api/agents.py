@@ -47,8 +47,7 @@ async def create_agent(
     await db.commit()
     await db.refresh(agent)
 
-    out = AgentCreated.model_validate(agent)
-    out.token = token  # returned only once
+    out = AgentCreated(**AgentOut.model_validate(agent).model_dump(), token=token)
     return out
 
 

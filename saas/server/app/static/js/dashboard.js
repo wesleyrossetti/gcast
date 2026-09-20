@@ -81,11 +81,11 @@ function deviceCard(d) {
           <small class="text-muted" style="min-width:30px">${volPct}%</small>
         </div>
         <div class="d-flex gap-1 justify-content-center flex-wrap">
-          <button class="btn btn-sm btn-outline-light btn-play-url" data-uuid="${d.device_uuid}" title="Reproduzir">
+          <button class="btn btn-sm btn-icon btn-play-url" data-uuid="${d.device_uuid}" title="Reproduzir">
             <i class="bi bi-play-circle"></i>
           </button>
-          <button class="btn btn-sm btn-outline-light btn-play" data-uuid="${d.device_uuid}" title="Play"><i class="bi bi-play-fill"></i></button>
-          <button class="btn btn-sm btn-outline-light btn-pause" data-uuid="${d.device_uuid}" title="Pause"><i class="bi bi-pause-fill"></i></button>
+          <button class="btn btn-sm btn-icon btn-play" data-uuid="${d.device_uuid}" title="Play"><i class="bi bi-play-fill"></i></button>
+          <button class="btn btn-sm btn-icon btn-pause" data-uuid="${d.device_uuid}" title="Pause"><i class="bi bi-pause-fill"></i></button>
           <button class="btn btn-sm btn-outline-danger btn-stop" data-uuid="${d.device_uuid}" title="Stop"><i class="bi bi-stop-fill"></i></button>
         </div>
       </div>

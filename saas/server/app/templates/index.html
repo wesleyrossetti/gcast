@@ -6,7 +6,7 @@
   <h2 class="mb-0"><i class="bi bi-grid me-2 text-danger"></i>Dashboard</h2>
   <div class="d-flex gap-2 align-items-center">
     <span id="status-indicator" class="badge bg-secondary"><i class="bi bi-circle-fill me-1"></i>Aguardando</span>
-    <button class="btn btn-outline-light btn-sm" id="btn-discover">
+    <button class="btn btn-outline-secondary btn-sm" id="btn-discover">
       <i class="bi bi-search me-1"></i>Descobrir Devices
     </button>
   </div>
@@ -22,28 +22,28 @@
 <!-- Play modal -->
 <div class="modal fade" id="playModal" tabindex="-1">
   <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light border-secondary">
-      <div class="modal-header border-secondary">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title"><i class="bi bi-play-circle me-2 text-danger"></i>Reproduzir</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="play-device-uuid">
         <ul class="nav nav-tabs nav-fill mb-3" id="playTabs">
           <li class="nav-item">
-            <button class="nav-link active text-light" data-bs-toggle="tab" data-bs-target="#tab-youtube">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-youtube">
               <i class="bi bi-youtube text-danger me-1"></i>YouTube
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link text-light" data-bs-toggle="tab" data-bs-target="#tab-url">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-url">
               <i class="bi bi-link-45deg me-1"></i>URL Direta
             </button>
           </li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade show active" id="tab-youtube">
-            <input type="text" class="form-control bg-secondary text-light border-secondary" id="play-yt-url"
+            <input type="text" class="form-control" id="play-yt-url"
                    placeholder="https://youtube.com/watch?v=... ou ID do vídeo">
             <div id="yt-preview" class="d-none mt-2">
               <div class="ratio ratio-16x9 rounded overflow-hidden">
@@ -52,18 +52,18 @@
             </div>
           </div>
           <div class="tab-pane fade" id="tab-url">
-            <div class="mb-2"><input type="url" class="form-control bg-secondary text-light border-secondary" id="play-url" placeholder="https://..."></div>
+            <div class="mb-2"><input type="url" class="form-control" id="play-url" placeholder="https://..."></div>
             <div class="mb-2">
-              <select class="form-select bg-secondary text-light border-secondary" id="play-content-type">
+              <select class="form-select" id="play-content-type">
                 <option value="video/mp4">MP4</option><option value="audio/mp3">MP3</option>
                 <option value="application/x-mpegURL">HLS</option>
               </select>
             </div>
-            <input type="text" class="form-control bg-secondary text-light border-secondary" id="play-title" placeholder="Título (opcional)">
+            <input type="text" class="form-control" id="play-title" placeholder="Título (opcional)">
           </div>
         </div>
       </div>
-      <div class="modal-footer border-secondary">
+      <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button class="btn btn-danger" id="btn-confirm-play"><i class="bi bi-play-fill me-1"></i>Reproduzir</button>
       </div>
@@ -71,4 +71,4 @@
   </div>
 </div>
 {% endblock %}
-{% block extra_js %}<script src="/static/js/dashboard.js"></script>{% endblock %}
+{% block extra_js %}<script src="/static/js/dashboard.js?v={{ static_v }}"></script>{% endblock %}

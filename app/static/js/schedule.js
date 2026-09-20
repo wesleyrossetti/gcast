@@ -27,11 +27,11 @@ async function loadSchedules() {
     }
     container.innerHTML = list.map(s => `
       <div class="col-md-4">
-        <div class="card bg-secondary bg-opacity-10 border-secondary h-100 text-light">
+        <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start">
               <div>
-                <h6 class="mb-1 text-light">${actionLabel[s.action] || s.action}
+                <h6 class="mb-1">${actionLabel[s.action] || s.action}
                   <span class="badge bg-secondary ms-1">${recurrenceLabel[s.recurrence]}</span>
                 </h6>
                 <p class="text-secondary small mb-0">Device: ${s.device_id}</p>
@@ -40,8 +40,8 @@ async function loadSchedules() {
                 <i class="bi bi-trash"></i>
               </button>
             </div>
-            <hr class="border-secondary my-2">
-            <p class="mb-0 small text-light">
+            <hr class="my-2">
+            <p class="mb-0 small">
               <i class="bi bi-clock me-1"></i>${formatDateTime(s.run_at)}
             </p>
             ${s.last_run ? `<p class="mb-0 small text-secondary">

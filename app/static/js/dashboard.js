@@ -126,13 +126,13 @@ function deviceCard(device) {
 
         <!-- Controls -->
         <div class="d-flex gap-1 justify-content-center flex-wrap">
-          <button class="btn btn-sm btn-outline-light btn-play-url" data-id="${device.device_id}" title="Reproduzir URL">
+          <button class="btn btn-sm btn-icon btn-play-url" data-id="${device.device_id}" title="Reproduzir URL">
             <i class="bi bi-link-45deg"></i>
           </button>
-          <button class="btn btn-sm btn-outline-light btn-play" data-id="${device.device_id}" title="Play">
+          <button class="btn btn-sm btn-icon btn-play" data-id="${device.device_id}" title="Play">
             <i class="bi bi-play-fill"></i>
           </button>
-          <button class="btn btn-sm btn-outline-light btn-pause" data-id="${device.device_id}" title="Pause">
+          <button class="btn btn-sm btn-icon btn-pause" data-id="${device.device_id}" title="Pause">
             <i class="bi bi-pause-fill"></i>
           </button>
           <button class="btn btn-sm btn-outline-danger btn-stop" data-id="${device.device_id}" title="Stop">

@@ -19,16 +19,16 @@
 <!-- New agent modal -->
 <div class="modal fade" id="newAgentModal" tabindex="-1">
   <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light border-secondary">
-      <div class="modal-header border-secondary">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title"><i class="bi bi-plus-circle me-2 text-danger"></i>Novo Agente</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <label class="form-label">Nome do agente (ex: Escritório SP)</label>
-        <input type="text" class="form-control bg-secondary text-light border-secondary" id="agent-name" placeholder="Meu Local">
+        <input type="text" class="form-control" id="agent-name" placeholder="Meu Local">
       </div>
-      <div class="modal-footer border-secondary">
+      <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button class="btn btn-danger" id="btn-create-agent"><i class="bi bi-plus-lg me-1"></i>Criar</button>
       </div>
@@ -39,8 +39,8 @@
 <!-- Token display modal (one-time) -->
 <div class="modal fade" id="tokenModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light border-secondary">
-      <div class="modal-header border-secondary">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title"><i class="bi bi-key text-warning me-2"></i>Token do Agente</h5>
       </div>
       <div class="modal-body">
@@ -49,19 +49,19 @@
           Copie agora — este token <strong>não será exibido novamente</strong>.
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control bg-secondary text-light border-secondary font-monospace" id="token-value" readonly>
-          <button class="btn btn-outline-light" id="btn-copy-token" title="Copiar">
+          <input type="text" class="form-control font-monospace" id="token-value" readonly>
+          <button class="btn btn-outline-secondary" id="btn-copy-token" title="Copiar">
             <i class="bi bi-clipboard"></i>
           </button>
         </div>
         <p class="small text-muted mb-1">Execute na rede local onde estão os Chromecasts:</p>
         <pre class="bg-black rounded p-2 small text-success" id="docker-cmd"></pre>
       </div>
-      <div class="modal-footer border-secondary">
+      <div class="modal-footer">
         <button class="btn btn-danger" data-bs-dismiss="modal" onclick="loadAgents()">Entendido</button>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-{% block extra_js %}<script src="/static/js/agents.js"></script>{% endblock %}
+{% block extra_js %}<script src="/static/js/agents.js?v={{ static_v }}"></script>{% endblock %}

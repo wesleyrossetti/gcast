@@ -15,7 +15,7 @@ async function loadAgents() {
     }
     container.innerHTML = agents.map(a => `
       <div class="col-md-4">
-        <div class="card bg-secondary bg-opacity-10 border-secondary text-light h-100">
+        <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start">
               <div>

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gcast-server.fullname" . }}-config
+  labels:
+    {{- include "gcast-server.labels" . | nindent 4 }}
+data:
+  API_PORT: "{{ .Values.service.port }}"
+  LOG_LEVEL: {{ .Values.logLevel | quote }}

@@ -6,7 +6,7 @@
   <h2 class="mb-0"><i class="bi bi-grid me-2 text-danger"></i>Dashboard</h2>
   <div class="d-flex gap-2 align-items-center">
     <span id="status-indicator" class="badge bg-secondary"><i class="bi bi-circle-fill me-1"></i>Aguardando</span>
-    <button class="btn btn-outline-light btn-sm" id="btn-discover">
+    <button class="btn btn-outline-secondary btn-sm" id="btn-discover">
       <i class="bi bi-search me-1"></i>Descobrir Devices
     </button>
   </div>
@@ -14,10 +14,10 @@
 
 <!-- Known hosts form (hidden by default) -->
 <div class="collapse mb-3" id="discover-options">
-  <div class="card bg-secondary bg-opacity-25 border-secondary p-3">
+  <div class="card bg-secondary bg-opacity-25 p-3">
     <label class="form-label small text-muted">IPs ou sub-redes (opcional) — ex: 192.168.1.100, 10.0.0.0/24</label>
     <div class="input-group">
-      <input type="text" class="form-control bg-dark text-light border-secondary" id="known-hosts"
+      <input type="text" class="form-control" id="known-hosts"
              placeholder="192.168.1.100, 10.25.25.0/24">
       <button class="btn btn-danger" id="btn-start-discover">
         <i class="bi bi-search me-1"></i>Descobrir
@@ -37,10 +37,10 @@
 <!-- Play Media Modal -->
 <div class="modal fade" id="playModal" tabindex="-1">
   <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light border-secondary">
-      <div class="modal-header border-secondary">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title"><i class="bi bi-play-circle me-2 text-danger"></i>Reproduzir</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="play-device-id">
@@ -48,17 +48,17 @@
         <!-- Tabs -->
         <ul class="nav nav-tabs nav-fill mb-3" id="playTabs">
           <li class="nav-item">
-            <button class="nav-link active text-light" data-bs-toggle="tab" data-bs-target="#tab-youtube">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-youtube">
               <i class="bi bi-youtube text-danger me-1"></i>YouTube
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link text-light" data-bs-toggle="tab" data-bs-target="#tab-url">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-url">
               <i class="bi bi-link-45deg me-1"></i>URL Direta
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link text-light" data-bs-toggle="tab" data-bs-target="#tab-web">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-web">
               <i class="bi bi-globe me-1"></i>Página Web
             </button>
           </li>
@@ -69,7 +69,7 @@
           <div class="tab-pane fade show active" id="tab-youtube">
             <div class="mb-3">
               <label class="form-label">URL ou ID do vídeo do YouTube</label>
-              <input type="text" class="form-control bg-secondary text-light border-secondary"
+              <input type="text" class="form-control"
                      id="play-yt-url"
                      placeholder="https://youtube.com/watch?v=... ou G_8uG1Ot0yo">
               <div class="form-text text-muted">Formatos aceitos: youtube.com/watch?v=ID, youtu.be/ID, ID direto</div>
@@ -85,12 +85,12 @@
           <div class="tab-pane fade" id="tab-url">
             <div class="mb-3">
               <label class="form-label">URL da Mídia *</label>
-              <input type="url" class="form-control bg-secondary text-light border-secondary" id="play-url"
+              <input type="url" class="form-control" id="play-url"
                      placeholder="https://exemplo.com/video.mp4">
             </div>
             <div class="mb-3">
               <label class="form-label">Tipo de Conteúdo</label>
-              <select class="form-select bg-secondary text-light border-secondary" id="play-content-type">
+              <select class="form-select" id="play-content-type">
                 <option value="video/mp4">Vídeo MP4</option>
                 <option value="video/webm">Vídeo WebM</option>
                 <option value="audio/mp3">Áudio MP3</option>
@@ -101,12 +101,12 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Título (opcional)</label>
-              <input type="text" class="form-control bg-secondary text-light border-secondary" id="play-title"
+              <input type="text" class="form-control" id="play-title"
                      placeholder="Nome do conteúdo">
             </div>
             <div class="mb-3">
               <label class="form-label">URL da Miniatura (opcional)</label>
-              <input type="url" class="form-control bg-secondary text-light border-secondary" id="play-thumb"
+              <input type="url" class="form-control" id="play-thumb"
                      placeholder="https://exemplo.com/thumb.jpg">
             </div>
           </div>
@@ -115,13 +115,13 @@
           <div class="tab-pane fade" id="tab-web">
             <div class="mb-3">
               <label class="form-label">URL da página *</label>
-              <input type="url" class="form-control border-secondary" id="cast-web-url"
+              <input type="url" class="form-control" id="cast-web-url"
                      placeholder="https://exemplo.com">
               <div class="form-text text-muted">Exibe a página no Chromecast via DashCast (app ID 84912283).</div>
             </div>
             <div class="mb-3">
               <label class="form-label">Recarregar a cada (segundos)</label>
-              <input type="number" class="form-control border-secondary" id="cast-web-reload"
+              <input type="number" class="form-control" id="cast-web-reload"
                      min="0" value="0" placeholder="0 = sem recarga automática">
             </div>
             <div class="form-check">
@@ -133,7 +133,7 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer border-secondary">
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-danger" id="btn-confirm-play">
           <i class="bi bi-play-fill me-1"></i>Reproduzir

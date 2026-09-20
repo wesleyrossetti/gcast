@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gcast-server.fullname" . }}
+  labels:
+    {{- include "gcast-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "gcast-server.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gcast-server.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h {{ include "gcast-server.postgresHost" . }} -p 5432 -U {{ .Values.postgres.user }}; do
+                echo "aguardando postgres..."; sleep 2;
+              done
+      containers:
+        - name: gcast-server
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "gcast-server.fullname" . }}-config
+            - secretRef:
+                name: {{ include "gcast-server.fullname" . }}-secret
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

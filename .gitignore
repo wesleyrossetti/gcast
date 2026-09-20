@@ -15,3 +15,7 @@ saas/server/data/*.db
 
 # Logs
 *.log
+
+# Kubernetes credentials — nunca versionar
+kube.conf
+saas/server/chart/*/values-secrets.yaml

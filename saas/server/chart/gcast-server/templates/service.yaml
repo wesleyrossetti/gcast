@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gcast-server.fullname" . }}
+  labels:
+    {{- include "gcast-server.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "gcast-server.labels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}

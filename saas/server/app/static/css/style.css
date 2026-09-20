@@ -1,11 +1,29 @@
 /* ── Global ───────────────────────────────────────────────────────────────── */
 :root {
-  --bs-body-bg: #1a1a1a;
   --cast-red: #e84343;
 }
 
-body {
-  background-color: #1a1a1a;
+[data-bs-theme="dark"] {
+  --bs-body-bg: #1a1a1a;
+  --bs-body-color: #e0e0e0;
+  --bs-secondary-color: #aaa;
+  --bs-border-color: #444;
+
+  --card-bg: #242424;
+  --card-border: #333;
+  --thumb-bg: #111;
+  --thumb-placeholder-grad: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  --thumb-placeholder-fg: #444;
+  --slider-track: #444;
+}
+
+[data-bs-theme="light"] {
+  --card-bg: #ffffff;
+  --card-border: var(--bs-border-color-translucent, #dee2e6);
+  --thumb-bg: #eee;
+  --thumb-placeholder-grad: linear-gradient(135deg, #f1f1f1 0%, #e2e2e2 100%);
+  --thumb-placeholder-fg: #adb5bd;
+  --slider-track: #ced4da;
 }
 
 /* ── Navbar ───────────────────────────────────────────────────────────────── */
@@ -15,14 +33,14 @@ body {
 
 /* ── Device Cards ─────────────────────────────────────────────────────────── */
 .device-card {
-  background: #242424;
-  border: 1px solid #333;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 .device-card:hover {
-  border-color: #555;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--bs-secondary-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 .device-card.playing {
   border-color: var(--cast-red);
@@ -32,18 +50,18 @@ body {
   height: 140px;
   object-fit: cover;
   border-radius: 8px 8px 0 0;
-  background: #111;
+  background: var(--thumb-bg);
 }
 .device-thumb-placeholder {
   width: 100%;
   height: 140px;
   border-radius: 8px 8px 0 0;
-  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: var(--thumb-placeholder-grad);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  color: #444;
+  color: var(--thumb-placeholder-fg);
 }
 
 /* ── Volume slider ───────────────────────────────────────────────────────── */
@@ -53,7 +71,7 @@ body {
   width: 100%;
   height: 4px;
   border-radius: 2px;
-  background: #444;
+  background: var(--slider-track);
   outline: none;
 }
 .volume-slider::-webkit-slider-thumb {
@@ -71,6 +89,17 @@ body {
   height: 3px;
   border-radius: 2px;
   cursor: pointer;
+}
+
+/* ── Icon buttons (seguem a cor do texto do tema, não o cinza fixo do Bootstrap) ── */
+.btn-icon {
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+}
+.btn-icon:hover {
+  color: var(--bs-body-bg);
+  background-color: var(--bs-body-color);
+  border-color: var(--bs-body-color);
 }
 
 /* ── Player state badges ─────────────────────────────────────────────────── */

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -29,6 +30,7 @@ logging.basicConfig(
 
 BASE_DIR  = os.path.dirname(__file__)
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+templates.env.globals["static_v"] = str(int(time.time()))
 
 
 @asynccontextmanager

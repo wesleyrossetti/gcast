@@ -62,9 +62,11 @@ document.getElementById('btn-create-agent').addEventListener('click', async () =
     newAgentModal.hide();
 
     const token = agent.token;
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsProtocol}://${window.location.host}/ws/agent`;
     document.getElementById('token-value').value = token;
     document.getElementById('docker-cmd').textContent =
-      `docker run -d --restart unless-stopped \\\n  -e AGENT_TOKEN=${token} \\\n  -e SERVER_WS_URL=wss://SEU-SERVIDOR/ws/agent \\\n  --network host \\\n  chromecast-agent:latest`;
+      `docker run -d --restart unless-stopped \\\n  -e AGENT_TOKEN=${token} \\\n  -e SERVER_WS_URL=${wsUrl} \\\n  --network host \\\n  ghcr.io/wesleyrossetti/gcast-agent:latest`;
 
     tokenModal.show();
     loadAgents();

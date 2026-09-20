@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import asyncio
+import ipaddress
 import json
 import logging
 import threading
+import time
 from typing import Any
 
 import pychromecast
+import zeroconf as zc
 from pychromecast.controllers.youtube import YouTubeController
 
 logger = logging.getLogger("agent.cast")
@@ -18,11 +21,69 @@ class LocalCastService:
     def __init__(self, discovery_timeout: int = 10) -> None:
         self._timeout = discovery_timeout
         self._devices: dict[str, pychromecast.Chromecast] = {}
+        self._scan_zconfs: list = []  # mantém as instâncias de Zeroconf vivas p/ os casts conectados
         self._lock = threading.Lock()
 
     # ── Discovery ─────────────────────────────────────────────────────────────
 
-    def discover(self) -> list[dict]:
+    @staticmethod
+    def _expand_hosts(hosts: list[str]) -> list[str]:
+        """Expande faixas CIDR (ex: 10.0.0.0/24) em IPs individuais; deixa hostnames/IPs passar direto."""
+        result: list[str] = []
+        for h in hosts:
+            h = h.strip()
+            if not h:
+                continue
+            try:
+                net = ipaddress.ip_network(h, strict=False)
+                if net.num_addresses == 1:
+                    result.append(str(net.network_address))
+                else:
+                    result.extend(str(ip) for ip in net.hosts())
+            except ValueError:
+                result.append(h)  # hostname ou IP já direto
+        return result
+
+    def _scan_known_hosts(self, known_hosts: list[str]) -> None:
+        """Escaneia diretamente os hosts/IPs informados, sem depender de mDNS/multicast."""
+        expanded = self._expand_hosts(known_hosts)
+        logger.info("Direct host scan: %d IP(s) expanded from input", len(expanded))
+
+        found: dict = {}
+        zconf = zc.Zeroconf()
+        ref: list = []
+
+        def _add(uuid, name):
+            if ref:
+                ci = ref[0].devices.get(uuid)
+                if ci:
+                    found[uuid] = ci
+
+        listener = pychromecast.discovery.SimpleCastListener(add_callback=_add)
+        browser = pychromecast.CastBrowser(listener, zconf, known_hosts=expanded)
+        ref.append(browser)
+        browser.start_discovery()
+        time.sleep(self._timeout)
+        browser.stop_discovery()
+
+        self._scan_zconfs.append(zconf)  # não fechar enquanto os casts estiverem em uso
+
+        with self._lock:
+            for uuid, cast_info in found.items():
+                try:
+                    cast = pychromecast.get_chromecast_from_cast_info(cast_info, zconf)
+                    cast.start()
+                    uid = str(uuid)
+                    self._devices[uid] = cast
+                    logger.info("Found: %s (%s)", cast_info.friendly_name, uid)
+                except Exception as exc:
+                    logger.error("Failed to connect to %s: %s", uuid, exc)
+
+    def discover(self, known_hosts: list[str] | None = None) -> list[dict]:
+        if known_hosts:
+            self._scan_known_hosts(known_hosts)
+            return self._snapshot_all()
+
         logger.info("Starting discovery (timeout=%ss)...", self._timeout)
         casts, browser = pychromecast.get_chromecasts(timeout=self._timeout)
         with self._lock:
@@ -79,7 +140,7 @@ class LocalCastService:
 
     def execute(self, action: str, device_id: str, payload: dict) -> dict:
         if action == "discover":
-            self.discover()
+            self.discover(known_hosts=payload.get("known_hosts"))
             return {"success": True}
 
         with self._lock:

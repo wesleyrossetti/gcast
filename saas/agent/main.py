@@ -13,6 +13,7 @@ from agent.cast_service import LocalCastService
 from agent.config import (
     AGENT_TOKEN,
     DISCOVERY_TIMEOUT,
+    KNOWN_HOSTS,
     LOG_LEVEL,
     RECONNECT_DELAY,
     SERVER_WS_URL,
@@ -31,7 +32,9 @@ async def run_agent() -> None:
 
     # Initial local discovery (blocking, run in executor to not block event loop)
     loop = asyncio.get_running_loop()
-    await loop.run_in_executor(None, cast.discover)
+    if KNOWN_HOSTS:
+        logger.info("KNOWN_HOSTS configurado: %s", KNOWN_HOSTS)
+    await loop.run_in_executor(None, cast.discover, KNOWN_HOSTS or None)
 
     while True:
         try:

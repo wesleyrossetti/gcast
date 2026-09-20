@@ -66,7 +66,12 @@ document.getElementById('btn-create-agent').addEventListener('click', async () =
     const wsUrl = `${wsProtocol}://${window.location.host}/ws/agent`;
     document.getElementById('token-value').value = token;
     document.getElementById('docker-cmd').textContent =
-      `docker run -d --restart unless-stopped \\\n  -e AGENT_TOKEN=${token} \\\n  -e SERVER_WS_URL=${wsUrl} \\\n  --network host \\\n  ghcr.io/wesleyrossetti/gcast-agent:latest`;
+      `docker run -d --restart unless-stopped \\\n  -e AGENT_TOKEN=${token} \\\n  -e SERVER_WS_URL=${wsUrl} \\\n  -e KNOWN_HOSTS=10.0.0.0/24 \\\n  --network host \\\n  ghcr.io/wesleyrossetti/gcast-agent:latest`;
+    const hint = document.getElementById('docker-cmd-hint');
+    if (hint) hint.textContent =
+      'KNOWN_HOSTS é opcional — só necessário se o Chromecast não for encontrado automaticamente por mDNS ' +
+      '(comum em Docker Desktop, VPNs e redes segmentadas). Aceita IP direto ou faixa CIDR, separados por vírgula. ' +
+      'Ajuste pra rede real onde estão os Chromecasts antes de rodar.';
 
     tokenModal.show();
     loadAgents();

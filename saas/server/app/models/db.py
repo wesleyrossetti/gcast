@@ -62,7 +62,11 @@ class Agent(Base):
     created_at = Column(DateTime, default=_now)
 
     org     = relationship("Organization", back_populates="agents")
-    devices = relationship("Device", back_populates="agent", lazy="select")
+    # delete-orphan: ao apagar um agente, os devices associados vão junto (sem
+    # isso, o SQLAlchemy tenta só desassociar via agent_id=NULL, o que quebra
+    # porque a coluna é NOT NULL). Devices reaparecem sozinhos quando um agente
+    # volta a reportar aquele device_uuid.
+    devices = relationship("Device", back_populates="agent", lazy="select", cascade="all, delete-orphan")
 
     @staticmethod
     def hash_token(raw: str) -> str:

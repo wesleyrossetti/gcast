@@ -107,6 +107,7 @@ async def _upsert_devices(
         if device:
             device.friendly_name = d.get("friendly_name") or device.friendly_name
             device.host          = d.get("host") or device.host
+            device.agent_id      = agent_id  # o agente que reportou por último passa a ser o dono
             device.updated_at    = datetime.utcnow()
         else:
             device = Device(

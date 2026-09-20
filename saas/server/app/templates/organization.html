@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% set active = "organization" %}
+{% set is_admin = user.role in ('owner', 'admin') %}
+{% block title %}Organização{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0"><i class="bi bi-building-gear me-2 text-danger"></i><span id="org-name">Organização</span></h2>
+  {% if is_admin %}
+  <button class="btn btn-outline-secondary btn-sm" id="btn-rename-org" title="Renomear organização">
+    <i class="bi bi-pencil me-1"></i>Renomear
+  </button>
+  {% endif %}
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0"><i class="bi bi-people me-2"></i>Usuários</h5>
+  {% if is_admin %}
+  <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#inviteModal">
+    <i class="bi bi-person-plus me-1"></i>Convidar
+  </button>
+  {% endif %}
+</div>
+<div id="users-list" class="row g-3 mb-4"></div>
+
+<div id="invites-section" class="mb-4 d-none">
+  <h5 class="mb-3"><i class="bi bi-envelope me-2"></i>Convites pendentes</h5>
+  <div id="invites-list" class="row g-3"></div>
+</div>
+
+{% if is_admin %}
+<div class="mb-4">
+  <h5 class="mb-3"><i class="bi bi-shield-check me-2"></i>Auditoria de Acesso</h5>
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle">
+      <thead>
+        <tr><th>Data/Hora</th><th>E-mail</th><th>Status</th><th>Motivo</th><th>IP</th></tr>
+      </thead>
+      <tbody id="audit-body">
+        <tr><td colspan="5" class="text-center text-muted py-3">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Invite modal -->
+<div class="modal fade" id="inviteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-plus me-2 text-danger"></i>Convidar Usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="invite-email" placeholder="pessoa@exemplo.com">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Papel</label>
+          <select class="form-select" id="invite-role">
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+            <option value="owner">Owner</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-danger" id="btn-send-invite"><i class="bi bi-send me-1"></i>Enviar convite</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  window.IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+  window.CURRENT_USER_ID = {{ user.id | tojson }};
+</script>
+<script src="/static/js/organization.js?v={{ static_v }}"></script>
+{% endblock %}

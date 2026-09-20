@@ -1,14 +1,42 @@
 {% extends "base.html" %}
 {% set active = "dashboard" %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Meus Casts{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="mb-0"><i class="bi bi-grid me-2 text-danger"></i>Dashboard</h2>
+  <h2 class="mb-0"><i class="bi bi-grid me-2 text-danger"></i>Meus Casts</h2>
   <div class="d-flex gap-2 align-items-center">
     <span id="status-indicator" class="badge bg-secondary"><i class="bi bi-circle-fill me-1"></i>Aguardando</span>
     <button class="btn btn-outline-secondary btn-sm" id="btn-discover">
       <i class="bi bi-search me-1"></i>Descobrir Devices
     </button>
+  </div>
+</div>
+
+<!-- Gráficos de uso -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-4">
+    <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
+      <div class="card-body">
+        <h6 class="text-muted small mb-2">Acessos por dia</h6>
+        <canvas id="chart-logins" height="140" role="img" aria-label="Gráfico de linha: logins bem-sucedidos por dia"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
+      <div class="card-body">
+        <h6 class="text-muted small mb-2">Ações de cast por dia</h6>
+        <canvas id="chart-actions" height="140" role="img" aria-label="Gráfico de barras: ações de cast por dia"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
+      <div class="card-body">
+        <h6 class="text-muted small mb-2">Disponibilidade dos agentes</h6>
+        <canvas id="chart-uptime" height="140" role="img" aria-label="Gráfico de linha: percentual de tempo online por agente, por dia"></canvas>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -71,4 +99,7 @@
   </div>
 </div>
 {% endblock %}
-{% block extra_js %}<script src="/static/js/dashboard.js?v={{ static_v }}"></script>{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/static/js/dashboard.js?v={{ static_v }}"></script>
+{% endblock %}

@@ -7,3 +7,8 @@ metadata:
 data:
   API_PORT: "{{ .Values.service.port }}"
   LOG_LEVEL: {{ .Values.logLevel | quote }}
+  PUBLIC_BASE_URL: {{ .Values.publicBaseUrl | default (printf "%s://%s" (ternary "https" "http" .Values.ingress.tls.enabled) .Values.ingress.host) | quote }}
+  SMTP_HOST: {{ .Values.smtp.host | quote }}
+  SMTP_PORT: {{ .Values.smtp.port | quote }}
+  SMTP_USER: {{ .Values.smtp.user | quote }}
+  SMTP_FROM: {{ .Values.smtp.from | quote }}

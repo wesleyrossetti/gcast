@@ -111,6 +111,58 @@ class HistoryEntry(Base):
     timestamp   = Column(DateTime(timezone=True), default=_now)
 
 
+# ── Invite ────────────────────────────────────────────────────────────────────
+
+class Invite(Base):
+    __tablename__ = "invites"
+
+    id          = Column(String, primary_key=True, default=_uuid)
+    org_id      = Column(String, ForeignKey("organizations.id"), nullable=False)
+    email       = Column(String, nullable=False)
+    role        = Column(String, default="member")   # owner | admin | member
+    token_hash  = Column(String, unique=True, nullable=False)
+    invited_by  = Column(String, ForeignKey("users.id"))
+    accepted_at = Column(DateTime(timezone=True))
+    expires_at  = Column(DateTime(timezone=True), nullable=False)
+    created_at  = Column(DateTime(timezone=True), default=_now)
+
+    org = relationship("Organization")
+
+    @staticmethod
+    def hash_token(raw: str) -> str:
+        return hashlib.sha256(raw.encode()).hexdigest()
+
+
+# ── Login audit ───────────────────────────────────────────────────────────────
+
+class LoginAudit(Base):
+    __tablename__ = "login_audit"
+
+    id              = Column(String, primary_key=True, default=_uuid)
+    # org_id/user_id ficam nulos quando o e-mail tentado não corresponde a
+    # nenhum usuário — não tem organização pra associar a tentativa.
+    org_id          = Column(String, ForeignKey("organizations.id"))
+    user_id         = Column(String, ForeignKey("users.id"))
+    email_attempted = Column(String, nullable=False)
+    success         = Column(Boolean, nullable=False)
+    reason          = Column(String)   # "ok" | "senha incorreta" | "e-mail não encontrado"
+    ip_address      = Column(String)
+    user_agent      = Column(String)
+    created_at      = Column(DateTime(timezone=True), default=_now)
+
+
+# ── Agent status events (histórico de online/offline) ──────────────────────────
+
+class AgentStatusEvent(Base):
+    __tablename__ = "agent_status_events"
+
+    id         = Column(String, primary_key=True, default=_uuid)
+    agent_id   = Column(String, ForeignKey("agents.id"), nullable=False)
+    org_id     = Column(String, ForeignKey("organizations.id"), nullable=False)
+    status     = Column(String, nullable=False)   # "online" | "offline"
+    created_at = Column(DateTime(timezone=True), default=_now)
+
+
 # ── Schedule ──────────────────────────────────────────────────────────────────
 
 class Schedule(Base):

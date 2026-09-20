@@ -39,6 +39,15 @@ async def get_current_user(
     return user
 
 
+async def require_org_admin(
+    user: User = Depends(get_current_user),
+) -> User:
+    """Só owner/admin podem gerenciar a organização (convidar, remover, trocar papel)."""
+    if user.role not in ("owner", "admin"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Apenas owner/admin podem fazer isso")
+    return user
+
+
 async def require_page_auth(
     request: Request,
     db: AsyncSession = Depends(get_db),

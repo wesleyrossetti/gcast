@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, EmailStr, Field
+
+Role = Literal["owner", "admin", "member"]
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
@@ -109,6 +111,70 @@ class HistoryEntryOut(BaseModel):
     success:     bool
     error:       str | None = None
     timestamp:   datetime
+
+    model_config = {"from_attributes": True}
+
+
+# ── Organization ──────────────────────────────────────────────────────────────
+
+class OrgOut(BaseModel):
+    id:         str
+    name:       str
+    slug:       str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class OrgUpdate(BaseModel):
+    name: str = Field(min_length=1)
+
+
+# ── User ──────────────────────────────────────────────────────────────────────
+
+class UserOut(BaseModel):
+    id:         str
+    name:       str | None = None
+    email:      str
+    role:       str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class UserRoleUpdate(BaseModel):
+    role: Role
+
+
+# ── Invite ────────────────────────────────────────────────────────────────────
+
+class InviteCreate(BaseModel):
+    email: EmailStr
+    role:  Role = "member"
+
+class InviteOut(BaseModel):
+    id:         str
+    email:      str
+    role:       str
+    invited_by: str | None = None
+    expires_at: datetime
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class AcceptInviteRequest(BaseModel):
+    token:    str
+    name:     str
+    password: str = Field(min_length=8)
+
+
+# ── Login audit ───────────────────────────────────────────────────────────────
+
+class LoginAuditOut(BaseModel):
+    id:              str
+    email_attempted: str
+    success:         bool
+    reason:          str | None = None
+    ip_address:      str | None = None
+    created_at:      datetime
 
     model_config = {"from_attributes": True}
 

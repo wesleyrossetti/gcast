@@ -10,6 +10,13 @@ services:
       - SECRET_KEY=CHANGE-ME-use-openssl-rand-hex-32
       - DATABASE_URL=sqlite+aiosqlite:///./data/saas.db
       - LOG_LEVEL=INFO
+      - PUBLIC_BASE_URL=http://localhost:8002
+      # SMTP opcional — sem SMTP_HOST, o link de convite só é logado (não envia e-mail de verdade)
+      # - SMTP_HOST=smtp.exemplo.com
+      # - SMTP_PORT=587
+      # - SMTP_USER=usuario
+      # - SMTP_PASSWORD=senha
+      # - SMTP_FROM=no-reply@exemplo.com
     volumes:
       - saas-data:/app/data
 

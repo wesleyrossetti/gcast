@@ -15,6 +15,14 @@
   --thumb-placeholder-grad: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
   --thumb-placeholder-fg: #444;
   --slider-track: #444;
+
+  /* Paleta de gráficos (dataviz skill) — passos de modo escuro */
+  --chart-series-1: #3987e5;  /* blue */
+  --chart-series-2: #d95926;  /* orange */
+  --chart-series-3: #199e70;  /* aqua */
+  --chart-series-4: #c98500;  /* yellow */
+  --chart-grid: #2c2c2a;
+  --chart-text: #c3c2b7;
 }
 
 [data-bs-theme="light"] {
@@ -24,6 +32,14 @@
   --thumb-placeholder-grad: linear-gradient(135deg, #f1f1f1 0%, #e2e2e2 100%);
   --thumb-placeholder-fg: #adb5bd;
   --slider-track: #ced4da;
+
+  /* Paleta de gráficos (dataviz skill) — passos de modo claro */
+  --chart-series-1: #2a78d6;  /* blue */
+  --chart-series-2: #eb6834;  /* orange */
+  --chart-series-3: #1baf7a;  /* aqua */
+  --chart-series-4: #eda100;  /* yellow */
+  --chart-grid: #e1e0d9;
+  --chart-text: #52514e;
 }
 
 /* ── Navbar ───────────────────────────────────────────────────────────────── */

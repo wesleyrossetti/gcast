@@ -214,6 +214,90 @@ function formatTime(s) {
   return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 }
 
+// ── Gráficos de uso ─────────────────────────────────────────────────────────────
+function chartColors() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    series: [
+      s.getPropertyValue('--chart-series-1').trim(),
+      s.getPropertyValue('--chart-series-2').trim(),
+      s.getPropertyValue('--chart-series-3').trim(),
+      s.getPropertyValue('--chart-series-4').trim(),
+    ],
+    grid: s.getPropertyValue('--chart-grid').trim(),
+    text: s.getPropertyValue('--chart-text').trim(),
+  };
+}
+
+async function loadStats() {
+  let stats;
+  try {
+    stats = await apiGet('/api/org/stats?days=30');
+  } catch (e) {
+    return; // sem dado ainda (org nova) — deixa os cards vazios
+  }
+  const c = chartColors();
+  const baseGrid = { color: c.grid };
+  const baseTicks = { color: c.text, font: { size: 11 } };
+  const commonOpts = {
+    responsive: true,
+    plugins: { legend: { labels: { color: c.text } } },
+    scales: {
+      x: { grid: baseGrid, ticks: baseTicks },
+      y: { grid: baseGrid, ticks: baseTicks, beginAtZero: true },
+    },
+  };
+
+  new Chart(document.getElementById('chart-logins'), {
+    type: 'line',
+    data: {
+      labels: stats.logins_by_day.map(d => d.date),
+      datasets: [{
+        label: 'Logins',
+        data: stats.logins_by_day.map(d => d.count),
+        borderColor: c.series[0], backgroundColor: c.series[0],
+        tension: 0.3, borderWidth: 2, pointRadius: 3,
+      }],
+    },
+    options: { ...commonOpts, plugins: { legend: { display: false } } },
+  });
+
+  new Chart(document.getElementById('chart-actions'), {
+    type: 'bar',
+    data: {
+      labels: stats.actions_by_day.map(d => d.date),
+      datasets: [{
+        label: 'Ações',
+        data: stats.actions_by_day.map(d => d.count),
+        backgroundColor: c.series[1],
+      }],
+    },
+    options: { ...commonOpts, plugins: { legend: { display: false } } },
+  });
+
+  const agentNames = [...new Set(stats.agent_uptime_by_day.map(d => d.agent_name))];
+  new Chart(document.getElementById('chart-uptime'), {
+    type: 'line',
+    data: {
+      labels: [...new Set(stats.agent_uptime_by_day.map(d => d.date))],
+      datasets: agentNames.map((name, i) => ({
+        label: name,
+        data: stats.agent_uptime_by_day
+          .filter(d => d.agent_name === name)
+          .map(d => Math.round(d.online_pct * 100)),
+        borderColor: c.series[i % c.series.length],
+        backgroundColor: c.series[i % c.series.length],
+        tension: 0.3, borderWidth: 2, pointRadius: 3,
+      })),
+    },
+    options: {
+      ...commonOpts,
+      scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, max: 100, ticks: { ...baseTicks, callback: v => v + '%' } } },
+    },
+  });
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 pollStatuses();
 setInterval(pollStatuses, 5000);
+loadStats();

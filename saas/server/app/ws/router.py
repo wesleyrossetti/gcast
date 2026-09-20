@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models.db import Agent, Device, Organization
+from app.models.db import Agent, AgentStatusEvent, Device, Organization
 from app.ws.manager import manager
 
 logger = logging.getLogger(__name__)
@@ -51,6 +51,8 @@ async def agent_ws(ws: WebSocket, db: AsyncSession = Depends(get_db)):
         await db.commit()
 
         manager.connect(agent_id, org_id, ws)
+        db.add(AgentStatusEvent(agent_id=agent_id, org_id=org_id, status="online"))
+        await db.commit()
         await ws.send_json({"type": "auth_ok", "agent_id": agent_id})
         logger.info("Agent %s authenticated", agent_id)
 
@@ -83,8 +85,9 @@ async def agent_ws(ws: WebSocket, db: AsyncSession = Depends(get_db)):
     finally:
         if agent_id:
             manager.disconnect(agent_id)
-            # Commit last_seen
+            # Commit last_seen + evento de offline
             try:
+                db.add(AgentStatusEvent(agent_id=agent_id, org_id=org_id, status="offline"))
                 await db.commit()
             except Exception:
                 pass

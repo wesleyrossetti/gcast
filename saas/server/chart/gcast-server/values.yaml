@@ -30,6 +30,20 @@ secretKey: ""
 
 logLevel: INFO
 
+# URL pública usada para montar links de convite por e-mail. Deixe vazio para
+# derivar automaticamente de ingress.host/ingress.tls.enabled.
+publicBaseUrl: ""
+
+# SMTP para envio de convite por e-mail — todos opcionais. Sem smtp.host, o
+# link do convite só é logado no servidor (fallback), não falha o convite.
+# NUNCA deixar smtp.password real aqui — sobrescrever no install.
+smtp:
+  host: ""
+  port: 587
+  user: ""
+  password: ""
+  from: "no-reply@gcast.wmanti.com.br"
+
 postgres:
   image: postgres:16-alpine
   database: gcast

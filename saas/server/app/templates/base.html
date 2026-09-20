@@ -30,9 +30,10 @@
     <div class="collapse navbar-collapse" id="nav">
       {% if user is defined %}
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link {% if active == 'dashboard' %}active{% endif %}" href="/"><i class="bi bi-grid me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link {% if active == 'dashboard' %}active{% endif %}" href="/"><i class="bi bi-grid me-1"></i>Meus Casts</a></li>
         <li class="nav-item"><a class="nav-link {% if active == 'agents' %}active{% endif %}" href="/agents"><i class="bi bi-cpu me-1"></i>Agentes</a></li>
         <li class="nav-item"><a class="nav-link {% if active == 'history' %}active{% endif %}" href="/history"><i class="bi bi-clock-history me-1"></i>Histórico</a></li>
+        <li class="nav-item"><a class="nav-link {% if active == 'organization' %}active{% endif %}" href="/organization"><i class="bi bi-building-gear me-1"></i>Organização</a></li>
       </ul>
       <div class="navbar-text d-flex align-items-center gap-3">
         <span class="text-muted small"><i class="bi bi-building me-1"></i>{{ user.name }}</span>

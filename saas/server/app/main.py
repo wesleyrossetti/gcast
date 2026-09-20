@@ -15,6 +15,7 @@ from app.api.control import router as control_router
 from app.api.devices import router as devices_router
 from app.api.history import router as history_router
 from app.api.media   import router as media_router
+from app.api.org      import router as org_router
 from app.auth.deps   import require_page_auth
 from app.auth.router import router as auth_router
 from app.config      import LOG_LEVEL
@@ -47,7 +48,7 @@ app = FastAPI(
 
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
-for r in (auth_router, agents_router, devices_router, media_router, control_router, history_router, ws_router):
+for r in (auth_router, agents_router, devices_router, media_router, control_router, history_router, org_router, ws_router):
     app.include_router(r)
 
 
@@ -61,6 +62,10 @@ def login_page(request: Request):
 def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
+@app.get("/accept-invite", response_class=HTMLResponse)
+def accept_invite_page(request: Request):
+    return templates.TemplateResponse("accept_invite.html", {"request": request})
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, user: User = Depends(require_page_auth)):
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
@@ -72,3 +77,7 @@ async def agents_page(request: Request, user: User = Depends(require_page_auth))
 @app.get("/history", response_class=HTMLResponse)
 async def history_page(request: Request, user: User = Depends(require_page_auth)):
     return templates.TemplateResponse("history.html", {"request": request, "user": user})
+
+@app.get("/organization", response_class=HTMLResponse)
+async def organization_page(request: Request, user: User = Depends(require_page_auth)):
+    return templates.TemplateResponse("organization.html", {"request": request, "user": user})
